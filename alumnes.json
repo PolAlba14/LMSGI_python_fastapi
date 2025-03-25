@@ -1,0 +1,47 @@
+[
+    {
+        "id": 1,
+        "nom": "Pol",
+        "cognom": "Alba",
+        "data": {"dia": 3, "mes": 8, "any": 1999},
+        "email": "joan.perez@gmail.com",
+        "feina": true,
+        "curs": "DAM 1A"
+    },
+    {
+        "id": 2,
+        "nom": "Wael",
+        "cognom": "Martínez",
+        "data": {"dia": 7, "mes": 6, "any": 2007},
+        "email": "wael.martinez@gmail.com",
+        "feina": false,
+        "curs": "DAM 1B"
+    },
+    {
+        "id": 3,
+        "nom": "David",
+        "cognom": "García",
+        "data": {"dia": 25, "mes": 6, "any": 2004},
+        "email": "david.garcia@gmail.com",
+        "feina": true,
+        "curs": "DAM 1A"
+    },
+    {
+        "id": 4,
+        "nom": "Laura",
+        "cognom": "López",
+        "data": {"dia": 5, "mes": 9, "any": 2003},
+        "email": "laura.lopez@gmail.com",
+        "feina": false,
+        "curs": "DAM 1A"
+    },
+    {
+        "id": 5,
+        "nom": "Carlos",
+        "cognom": "Sánchez",
+        "data": {"dia": 7, "mes": 2, "any": 2004},
+        "email": "carlos.sanchez@gmail.com",
+        "feina": true,
+        "curs": "DAM 1B"
+    }
+]
