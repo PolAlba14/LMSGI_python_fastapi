@@ -1,58 +1,66 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import json
+import os
 
 app = FastAPI()
 
-# Definim el model d'alumne
+ALUMNES_FILE = 'alumnes.json'
+alumnes = []
+id_actual = 1
+
+# Carrega el fitxer JSON a l'inici
+if os.path.exists(ALUMNES_FILE):
+    with open(ALUMNES_FILE, 'r') as f:
+        alumnes = json.load(f)
+        if alumnes:
+            id_actual = max(a['id'] for a in alumnes) + 1
+
+# Model Pydantic per afegir un alumne
+class Data(BaseModel):
+    dia: int
+    mes: int
+    any: int
+
 class Alumne(BaseModel):
-    id: int
     nom: str
     cognom: str
-    data: dict
+    data: Data
     email: str
     feina: bool
     curs: str
 
-# Llegir dades d'alumnes des del fitxer JSON
-def llegir_dades():
-    with open("alumnes.json", "r") as f:
-        return json.load(f)
-
-# Endpoint per mostrar la informació bàsica de l'institut
 @app.get("/")
-def root():
-    return {"message": "Institut TIC de Barcelona"}
+def read_root():
+    return "Institut TIC de Barcelona"
 
-# Endpoint per obtenir el número total d'alumnes
 @app.get("/alumnes/")
-def obtenir_total_alumnes():
-    alumnes = llegir_dades()
-    return {"total_alumnes": len(alumnes)}
+def get_total():
+    return {"total": len(alumnes)}
 
-# Endpoint per obtenir la informació d'un alumne per ID
-@app.get("/id/{id}")
-def obtenir_alumne(id: int):
-    alumnes = llegir_dades()
-    for alumne in alumnes:
-        if alumne['id'] == id:
-            return alumne
-    return {"error": "Alumne no trobat"}
-
-# Endpoint per eliminar un alumne per ID
-@app.delete("/del/{id}")
-def eliminar_alumne(id: int):
-    alumnes = llegir_dades()
-    alumnes = [alumne for alumne in alumnes if alumne['id'] != id]
-    with open('alumnes.json', 'w') as f:
-        json.dump(alumnes, f, indent=4)
-    return {"message": "Alumne esborrat"}
-
-# Endpoint per afegir un alumne
-@app.post("/alumne/")
-def afegir_alumne(alumne: Alumne):
-    alumnes = llegir_dades()
-    alumnes.append(alumne.dict())
-    with open('alumnes.json', 'w') as f:
-        json.dump(alumnes, f, indent=4)
+@app.get("/id/{numero}")
+def get_alumne(numero: int):
+    alumne = next((a for a in alumnes if a['id'] == numero), None)
+    if not alumne:
+        raise HTTPException(status_code=404, detail="Alumne no trobat")
     return alumne
+
+@app.delete("/del/{numero}")
+def delete_alumne(numero: int):
+    global alumnes
+    alumnes = [a for a in alumnes if a['id'] != numero]
+    with open(ALUMNES_FILE, 'w') as f:
+        json.dump(alumnes, f, indent=4)
+    return {"status": "Alumne esborrat"}
+
+@app.post("/alumne/")
+def add_alumne(alumne: Alumne):
+    global id_actual
+    nou = alumne.dict()
+    nou['id'] = id_actual
+    alumnes.append(nou)
+    id_actual += 1
+    with open(ALUMNES_FILE, 'w') as f:
+        json.dump(alumnes, f, indent=4)
+    return {"status": "Alumne afegit", "id": nou['id']} 
+
