@@ -12,19 +12,19 @@ def carregar_alumnes():
         with open(ALUMNES_FILE, 'r') as f:
             alumnes = json.load(f)
             if alumnes:
-                id_actual = max(a['id'] for a in alumnes) + 1
+                id_actual = max(a['id'] for a in alumnes) + 1  # Assegura ID únic
 
 # Desa alumnes al fitxer JSON
 def desar_alumnes():
     with open(ALUMNES_FILE, 'w') as f:
         json.dump(alumnes, f, indent=4)
 
-# Mostra tots els alumnes (id, nom, cognom)
+# Mostra ID, nom i cognom de tots els alumnes
 def mostrar_alumnes():
     for a in alumnes:
         print(f"{a['id']}: {a['nom']} {a['cognom']}")
 
-# Afegeix un alumne nou
+# Afegeix un alumne nou amb dades introduïdes per l’usuari
 def afegir_alumne():
     global id_actual
     nom = input("Nom: ")
@@ -35,6 +35,7 @@ def afegir_alumne():
     email = input("Email: ")
     feina = input("Té feina? (s/n): ").lower() == 's'
     curs = input("Curs: ")
+
     nou = {
         'id': id_actual,
         'nom': nom,
@@ -44,11 +45,12 @@ def afegir_alumne():
         'feina': feina,
         'curs': curs
     }
+
     alumnes.append(nou)
     id_actual += 1
     print("Alumne afegit!")
 
-# Veure alumne per ID
+# Mostra totes les dades d’un alumne per ID
 def veure_alumne():
     id_busc = int(input("ID de l'alumne: "))
     alumne = next((a for a in alumnes if a['id'] == id_busc), None)
@@ -57,7 +59,7 @@ def veure_alumne():
     else:
         print("Alumne no trobat.")
 
-# Esborra alumne per ID
+# Esborra un alumne per ID
 def esborrar_alumne():
     global alumnes
     id_busc = int(input("ID a esborrar: "))
@@ -85,3 +87,4 @@ while True:
         break
     else:
         print("Opció no vàlida")
+
